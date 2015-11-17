@@ -1,8 +1,8 @@
-import Dat from 'dat-gui';
+import setts from './setts';
 import Scene from './scene/scene';
 import { Graphics } from 'pixi.js';
 import NumberUtils from './utils/number-utils';
-import Particle from './lib/Particle';
+import Emitter from './lib/Emitter';
 
 class App {
 
@@ -19,19 +19,17 @@ class App {
     let root = document.body.querySelector('.app')
     root.appendChild( this.scene.renderer.view );
 
-    const options = {
-      parent: this.scene,
-      x: this.width/2,
-      y: this.height/2,
-      vx: 1,
-      vy: -2
-    }
+    this.lastMousePos = {x: 0, y: 0};
 
-    this.particles = [];
-    this.particles.push(new Particle(options));
+    this.emitter = new Emitter(this.scene);
 
+    this.bindMethods();
     this.addListeners();
 
+  }
+
+  bindMethods(){
+    this.onMouseMove = this.onMouseMove.bind(this);
   }
 
   /**
@@ -41,7 +39,12 @@ class App {
 
     window.addEventListener( 'resize', this.onResize.bind(this) );
     TweenMax.ticker.addEventListener( 'tick', this.update.bind(this) )
+    this.scene.renderer.view.addEventListener('mousemove', this.onMouseMove, false)
 
+  }
+
+  onMouseMove(event){
+    this.emitter.setEmitPoint(event.clientX, event.clientY);
   }
 
   /**
@@ -53,12 +56,11 @@ class App {
     this.DELTA_TIME = Date.now() - this.LAST_TIME;
     this.LAST_TIME = Date.now();
 
-    this.particles[0].update();
+    this.emitter.update( this.DELTA_TIME );
 
     this.scene.render();
 
   }
-
 
 
   /**
@@ -72,7 +74,6 @@ class App {
     this.height = window.innerHeight;
 
     this.scene.resize( this.width, this.height );
-
 
   }
 
