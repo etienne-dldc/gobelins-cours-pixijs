@@ -1,20 +1,33 @@
 import { Graphics } from 'pixi.js';
 
-class Particle {
+function or(value, def) {
+  return  (value !== undefined) ? value : deff;
+};
+
+class Particle extends Graphics {
 
   constructor( options ) {
-    this.x = options.x;
-    this.y = options.y;
+    super();
+
+    // Location
+    this.x = or(options.x, 0);
+    this.y = or(options.y, 0);
+
+    // Velocity
+    this.vx = or(options.vx, 0);
+    this.vy = or(options.vy, 0);
+
     this.parent = options.parent;
 
-    this.el = new Graphics();
-    this.el.beginFill( 0xFF0000 );
-    this.el.drawCircle(0, 0, 20);
+    this.beginFill( 0xFF0000 );
+    this.drawCircle(0, 0, 20);
 
-    this.el.x = this.x;
-    this.el.y = this.y;
+    this.parent.addChild(this);
+  }
 
-    this.parent.addChild(this.el);
+  update(){
+    this.x += this.vx;
+    this.y += this.vy;
   }
 
 }

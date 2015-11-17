@@ -22,10 +22,13 @@ class App {
     const options = {
       parent: this.scene,
       x: this.width/2,
-      y: this.height/2
+      y: this.height/2,
+      vx: 1,
+      vy: -2
     }
 
-    let p = new Particle(options);
+    this.particles = [];
+    this.particles.push(new Particle(options));
 
     this.addListeners();
 
@@ -49,6 +52,8 @@ class App {
 
     this.DELTA_TIME = Date.now() - this.LAST_TIME;
     this.LAST_TIME = Date.now();
+
+    this.particles[0].update();
 
     this.scene.render();
 
